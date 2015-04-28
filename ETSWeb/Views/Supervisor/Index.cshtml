@@ -1,0 +1,15 @@
+﻿@model IEnumerable<ETSWeb.Models.EmployeeModel>
+@using ETSWeb.Models;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Coaches</h2>
+<p>These are your coaches, click on one to view their entered time</p>
+<ul>
+    @foreach (EmployeeModel coach in Model)
+    {
+        <li>@Html.ActionLink(coach.sort_name, "Impersonate", new { coachKey = coach.name_key })</li>
+    }
+</ul>

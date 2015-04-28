@@ -1,0 +1,124 @@
+﻿@model ETSWeb.Models.CardModel
+@using System.Globalization;
+@using ETSWeb.Models;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    Week of <strong>@Model.WeekStart.ToString("MM/d/yyyy")</strong> - <strong>@Model.WeekEnd.ToString("MM/d/yyyy")</strong>
+    <p>@Html.ActionLink("Previous Week", "PreviousWeek", new { weekStart =  Model.WeekStart})  @Html.ActionLink("Next Week", "NextWeek", new { weekStart =  Model.WeekStart})  @Html.ActionLink("View All Weeks", "ViewWeeks")</p>
+    <p>@Html.ActionLink("Create New Line", "Index")</p>
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EditLine.LineDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EditLine.ClientID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EditLine.ActivityCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EditLine.Pieces)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EditLine.StartTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EditLine.EndTime)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.Lines) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LineDate)
+        </td>
+        <td>
+            @Html.Raw(Model.Clients.FirstOrDefault(c => c.Value == item.ClientID).Text)
+        </td>
+        <td>
+            @Html.Raw(Model.ActivityCodes.FirstOrDefault(c => c.Value == item.ActivityCode).Text)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Pieces)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndTime)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+    <tr>
+        <td colspan="7">Total Hours = @Model.Lines.Sum(x => (x.EndTime - x.StartTime).TotalHours) </td>
+    </tr>
+    <tr>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+        <td>
+            <div class="editor-field dateTextBox">
+                @Html.HiddenFor(model => model.EditLine.Id, new { data_val = "false" })
+                @Html.EditorFor(model => model.EditLine.LineDate)
+                @Html.ValidationMessageFor(model => model.EditLine.LineDate)
+            </div>
+        </td>
+        <td>
+        <div class="editor-field otherTextBox">
+@*            @Html.EditorFor(model => model.EditLine.ClientID)*@
+            @Html.DropDownListFor(model => model.EditLine.ClientID, Model.Clients,"Select")
+            @Html.ValidationMessageFor(model => model.EditLine.ClientID)
+        </div>
+            
+        </td>
+        <td>
+        <div class="editor-field otherTextBox">
+            @Html.DropDownListFor(model => model.EditLine.ActivityCode, Model.ActivityCodes,"Select")
+            @Html.ValidationMessageFor(model => model.EditLine.ActivityCode)
+        </div>
+            
+        </td>
+        <td>
+            <div class="editor-field timeTextBox">
+                @Html.EditorFor(model => model.EditLine.Pieces)
+                @Html.ValidationMessageFor(model => model.EditLine.Pieces)
+            </div>
+            
+        </td>
+        <td>
+        <div class="editor-field timeTextBox">
+            @Html.EditorFor(model => model.EditLine.StartTime,  new { htmlAttributes = new { @type = "time" }, })
+            @Html.ValidationMessageFor(model => model.EditLine.StartTime)
+        </div>
+            
+        </td>
+        <td>
+        <div class="editor-field timeTextBox">
+            @Html.EditorFor(model => model.EditLine.EndTime,  new { htmlAttributes = new { @type = "time" }, })
+            @Html.ValidationMessageFor(model => model.EditLine.EndTime)
+        </div>
+            
+        </td>
+        <td>
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+        </td>
+}
+        </tr>
+</table>

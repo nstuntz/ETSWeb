@@ -1,0 +1,354 @@
+﻿@model ETSWeb.Models.LineModel
+@using System.Globalization;
+
+@{
+    ViewBag.Title = "Client Entry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div>
+        <h2>ClientEntry - @Html.Raw(Model.Client.sort_name)      
+        @if (Model.IsSubmitted)
+        {
+            <span> - Submitted</span>
+        }
+        else if (Model.IsApproved)
+        {            
+            <span> - Approved</span>
+        }
+        else
+        {            
+            <span> - Open</span>
+        }</h2> 
+
+        <h3>Daily Totals</h3>
+        <table>
+            <tr>
+                @for (int i = 0; i < 7; i++)
+                {
+                    <td>@System.Enum.GetName(typeof(DayOfWeek), Model.WeekStart.AddDays(i).DayOfWeek)</td>
+                }
+                <td>Total</td>
+            </tr>
+                <tr>
+                    @foreach (KeyValuePair<int, decimal> dayHours in Model.Hours)
+                    {
+                        <td>@((dayHours.Value * 4).ToString("F0")) (@dayHours.Value.ToString("F"))</td>
+                    }
+                    <td>@((Model.Hours.Sum(x => x.Value) * 4).ToString("F0")) (@Model.Hours.Sum(x => x.Value).ToString("F"))</td>
+                </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditLine.LineDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditLine.ActivityCode)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditLine.Pieces)
+                </th>
+                @if (System.Configuration.ConfigurationManager.AppSettings["UseHours"] == "1")
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.EditLine.Hours)
+                    </th>
+                }
+                else
+                { 
+                    <th>
+                        @Html.DisplayNameFor(model => model.EditLine.StartTime)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EditLine.EndTime)
+                    </th>
+                }
+                <th>
+                    @Html.Raw("Units")
+                </th>
+                <th></th>
+                @if (!Model.IsApproved && !Model.IsSubmitted)
+                {
+                    <th></th>
+                }
+            </tr>
+
+            @foreach (var item in Model.Lines)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LineDate)
+                    </td>
+                    <td>
+                        @Html.Raw(Model.ActivityCodes.FirstOrDefault(x => x.Value == item.ActivityCode).Text)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pieces)
+                    </td>
+                    @if (System.Configuration.ConfigurationManager.AppSettings["UseHours"] == "1")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Hours)
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndTime)
+                        </td>
+                    }
+                    <td>
+                        @Html.Raw(Math.Floor(item.Hours * 4 ))
+                    </td>
+                    <td>
+                        @if (item.Comments != null && item.Comments.Length > 0)
+                        { 
+                            <a href='@item.Comments' class="comments-view">Comments</a>
+                        }
+                    </td>
+                    @if (!Model.IsApproved && !Model.IsSubmitted)
+                    {
+                        <td>
+                            <div class="inline">@Html.ActionLink("Edit", "Edit", new { id = item.Id, clientID = Model.Client.Name_Key, week = Model.WeekStart }) | @Html.ActionLink("Delete", "Delete", new { id = item.Id, clientID = Model.Client.Name_Key, week = Model.WeekStart })</div>
+                        </td>
+                    }
+                </tr>
+            }
+                @if (!Model.IsApproved && !Model.IsSubmitted)
+                {
+                    <tr>
+                        <td>
+                            <div class="editor-field dateTextBox">
+                                @Html.HiddenFor(model => model.EditLine.Id, new { data_val = "false" })
+                                @Html.HiddenFor(model => model.EditLine.ClientID, new { id="clientID", data_val = "false" })
+                                @Html.EditorFor(model => model.EditLine.LineDate, new { htmlAttributes = new { id = "lineDate" } })
+                                @Html.ValidationMessageFor(model => model.EditLine.LineDate)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field otherTextBox">
+                                @Html.DropDownListFor(model => model.EditLine.ActivityCode, Model.ActivityCodes, "Select")
+                                @Html.ValidationMessageFor(model => model.EditLine.ActivityCode)
+                            </div>
+
+                        </td>
+                        <td>
+                            <div class="editor-field otherTextBox">
+                                @Html.EditorFor(model => model.EditLine.Pieces, new { htmlAttributes = new { id = "pieces" } })
+                                <span id="piecesMessage" class="hidden error">More than 1000 pieces</span>
+                            </div>
+
+                        </td>
+                        @if (System.Configuration.ConfigurationManager.AppSettings["UseHours"] == "1")
+                        {
+                            <td>
+                                <div class="editor-field otherTextBox">
+                                    @Html.EditorFor(model => model.EditLine.Hours, new { htmlAttributes = new { id = "hours" } })
+                                    @Html.ValidationMessageFor(model => model.EditLine.Hours)
+                                </div>
+
+                            </td>
+                        }
+                        else
+                        {
+    
+                            <td>
+                                <div class="editor-field timeTextBox">
+                                    @Html.EditorFor(model => model.EditLine.StartTime, new { htmlAttributes = new { @type = "time", id = "startTime" } })
+                                    @Html.ValidationMessageFor(model => model.EditLine.StartTime)                                
+                                </div>
+
+                            </td>
+                            <td>
+                                <div class="editor-field timeTextBox">
+                                    @Html.EditorFor(model => model.EditLine.EndTime, new { htmlAttributes = new { @type = "time", id = "endTime" } })
+                                    @Html.ValidationMessageFor(model => model.EditLine.EndTime)
+                                </div>
+
+                            </td>
+                        }
+                        
+                        <td>
+                            <span id="units"></span>
+                        </td>
+                        <td>
+                            <div class="editor-field otherTextBox">
+                                <a href="#" id="comments-open">Comments</a>
+                            </div>
+
+                        </td>
+                        <td>
+                            @Html.HiddenFor(x => x.WeekStart, Model.WeekStart)
+                            @Html.HiddenFor(x => x.Client.Name_Key, Model.Client.Name_Key)
+                            @Html.HiddenFor(model => model.EditLine.Comments, new { data_val = "false", id="comments"})
+
+                            @{
+                                    string word = "Add";
+                                    if (Model.EditLine.Id > 0)
+                                    {
+                                        word = "Save";
+                                    }
+                            }
+                            <input type="submit" value="@word" />
+                        </td>
+
+                    </tr>
+                }
+            </table>
+        </div>
+    <div id="hoursWarning" class="hidden">
+        <span>This will give the client more than the recomended hours.</span>
+    </div>
+    <div style="text-align:right;">
+        <h3>@Html.ActionLink("Next Consumer", "WeekEntry", new { weekStart = Model.WeekStart.ToString("MM-dd-yyyy") })</h3>
+    </div>
+    
+    <div id="dialog-comments" title="Comments">
+        <p class="validateTips">Any comments about this time period.</p>
+        @Html.TextArea("CommentBox")
+    </div>
+    
+    
+    <div id="dialog-comments-view" title="Comments">
+        <p class="validateTips">Any comments about this time period.</p>
+        @Html.TextArea("CommentView")
+    </div>
+}
+    <script type="text/javascript">
+    $(function () {
+        $('#endTime').blur(function () {
+            var diff = 0;
+            var d1 = Date.parse(new Date().toDateString() + " " + $('#startTime').val());
+            var d2 = Date.parse(new Date().toDateString() + " " + $('#endTime').val());
+
+            diff = ((d2 - d1) / 1000) / 60 / 15;
+
+            if (!isNaN(diff)) {
+                $('#units').text(diff.toFixed(0));
+            }
+            var temp1 = "../api/Clients/Hours/" + $('#clientID').val() + "/" + $.datepicker.formatDate('mm-dd-yy', $('#lineDate').datepicker('getDate')) + "/" + replaceAll(":", "!", $('#startTime').val()) + "/" + replaceAll(":", "!", $('#endTime').val());
+            var request = $.ajax({
+                url: temp1,
+                type: "GET",
+                dataType: "JSON"
+            });
+
+            request.done(function (msg) {
+                if ($.trim(msg) == "true") {
+                    $('#hoursWarning').removeClass('hidden');
+                }
+                else {
+                    $('#hoursWarning').addClass('hidden');
+                }
+            });
+        });
+
+
+        $('#hours').blur(function () {
+            var diff = 0;       
+            var hours = $(this).val();
+            diff = (hours) * 4;
+            if (!isNaN(diff)) {
+                $('#units').text(diff.toFixed(0));
+            }
+            var temp1 = "../api/Clients/Hours/" + $('#clientID').val() + "/" + $.datepicker.formatDate('mm-dd-yy', $('#lineDate').datepicker('getDate')) + "/" + hours + "/";
+            var request = $.ajax({
+                url: temp1,
+                type: "GET",
+                dataType: "JSON"
+            });
+
+            request.done(function (msg) {
+                if ($.trim(msg) == "true") {
+                    $('#hoursWarning').removeClass('hidden');
+                }
+                else {
+                    $('#hoursWarning').addClass('hidden');
+                }
+            });
+        });
+
+
+        $('#pieces').blur(function () {
+            var count = $('#pieces').val();
+
+            if (!isNaN(count)) {
+                if (count > 1000) {
+                    $('#piecesMessage').removeClass('hidden');
+                }
+                else {
+                    if (!$('#piecesMessage').hasClass('hidden')) {
+                        $('#piecesMessage').addClass('hidden');
+                    }
+                }
+            }
+        });
+
+        $("#lineDate").datepicker();
+
+    });
+
+    dialogView = $("#dialog-comments-view").dialog({
+        autoOpen: false,
+        height: 250,
+        width: 550,
+        modal: true,
+        buttons: {
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function () { }
+    });
+
+
+    dialog = $("#dialog-comments").dialog({
+        autoOpen: false,
+        height: 250,
+        width: 550,
+        modal: true,
+        buttons: {
+            "Save": function () {
+                if ($("#CommentBox").text) {
+                    //var $val = $("#CommentBox").attr('text');
+                    $('#comments').val($("#CommentBox").val());
+                }
+                dialog.dialog("close");
+            },
+            Cancel: function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function () { }
+    });
+
+
+    $(".comments-view").click(function (e) {
+        e.preventDefault();
+        var elem = $(this);
+        $('#CommentView').val(elem.attr("href"));
+        dialogView.dialog("open");
+    });
+
+
+
+    $("#comments-open").click(function (e) {
+        e.preventDefault();
+        if ($("#comments").val && $("#CommentBox").text) {
+            //var $val = $("#comments").attr('value');
+            $('#CommentBox').val($("#comments").val())
+        }
+        dialog.dialog("open");
+    });
+
+    function replaceAll(find, replace, str) {
+        return str.replace(new RegExp(find, 'g'), replace);
+    }
+    </script>

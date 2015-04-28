@@ -1,0 +1,79 @@
+﻿@model ETSWeb.Models.OneWeekModel
+@using System.Globalization;
+
+@{
+    ViewBag.Title = "WeekEntry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Week Entry
+    @if (Model.IsSubmitted)
+    {
+        <span> - Submitted</span>
+    }
+    else if (Model.IsApproved)
+    {
+        <span> - Approved</span>
+    }</h2>
+
+<h3>Week of <strong>@(Model.WeekStart.ToString("MM/dd/yyyy") + " - " + Model.WeekEnd.ToString("MM/dd/yyyy"))</strong></h3>
+
+<h4>@Html.ActionLink("View All Weeks", "Weeks")</></h4>
+
+@if (!Model.IsSubmitted && !Model.IsApproved)
+{
+    <div>Please choose a client from the list below, or select from the list to add a new one.</div>
+    <div>
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(x => x.WeekStart, Model.WeekStart)
+
+            @Html.ValidationMessageFor(x => x.NewClientNameKey)
+            @Html.DropDownListFor(x => x.NewClientNameKey, Model.NewClients, "Select")
+            <input type="submit" value="Add" />
+        }
+    </div>
+}
+<table>
+    <tr>
+        <td>Client</td>
+        @for (int i = 0; i < 7; i++)
+        {
+            <td>@System.Enum.GetName(typeof(DayOfWeek),Model.WeekStart.AddDays(i).DayOfWeek)</td>
+        }    
+        <td>Total</td>
+        @if(!Model.IsSubmitted && !Model.IsApproved)
+        { 
+            <td colspan="2">&nbsp;</td>
+        }
+    </tr>
+    @foreach (var client in Model.Clients)
+        {
+            <tr>
+                <td>@Html.ActionLink(client.Client.sort_name, "ClientEntry", new { clientID = client.Client.Name_Key, day = Model.WeekStart.ToString("MM-dd-yyyy")  })</td>
+                @foreach (KeyValuePair<int, decimal> dayHours in client.Hours)
+                {
+                    <td>@((dayHours.Value*4).ToString("F0")) (@dayHours.Value.ToString("F"))</td>
+                }
+                <td>@((client.Hours.Sum(x => x.Value) * 4).ToString("F0")) (@client.Hours.Sum(x => x.Value).ToString("F"))</td>
+                @if(!Model.IsSubmitted && !Model.IsApproved)
+                { 
+                    if (ViewBag.AllowDuplicates)
+                    { 
+                        <td>@Html.ActionLink("Duplicate", "DuplicateClientWeek", new { clientID = client.Client.Name_Key, day = Model.WeekStart.ToString("MM-dd-yyyy") })</td>
+                    }
+                    <td>@Html.ActionLink("Delete", "RemoveClient", new { clientID = client.Client.Name_Key, day = Model.WeekStart.ToString("MM-dd-yyyy") })</td>
+                }
+            </tr>
+        
+        }
+
+</table>
+<div>
+
+    @if(!Model.IsSubmitted && !Model.IsApproved)
+    {
+    <h3>@Html.ActionLink("Submit Time", "SubmitTime", new { weekStart = Model.WeekStart.ToString("MM-dd-yyyy") }, new { onclick = "return confirm('Are you sure you wish to submit this weeks time?');" })</h3>
+    }
+</div>

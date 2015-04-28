@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section featured {
+    <section class="featured header-bg">
+    <div class="content-wrapper">
+        <div class="inlineFlex">
+            <img src="~/Images/ETS logo 4c.jpg" height="66" width="66" />
+            <hgroup class="title">
+                @if (!string.IsNullOrWhiteSpace(ViewBag.AgencyName))
+                {
+                    <h1>@ViewBag.AgencyName</h1>
+                }
+                else
+                {
+                    <h1>Economised <br />Time Services System</h1>
+                }
+            </hgroup>
+        </div>
+    </div>
+</section>
+}
+<ol class="round">
+    @if (!Request.IsAuthenticated) {
+        <li class="one">
+            <h5>Login</h5>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+        </li>
+    }
+    else
+    {
+        <li class="one">
+            <h5>Cards</h5>@Html.ActionLink("Time Card", "Weeks", "Card")
+        </li>
+    }
+</ol>
+
