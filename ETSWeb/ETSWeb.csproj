@@ -287,6 +287,7 @@
     <Content Include="Content\themes\ui.jqgrid.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <None Include="Properties\PublishProfiles\ETSWeb.pubxml" />
     <None Include="Scripts\jquery-1.11.0.intellisense.js" />
     <Content Include="Images\ETS logo 4c.jpg" />
     <Content Include="Images\ets-banner image.jpg" />
@@ -306,56 +307,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.7.1.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-ar.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-bg.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-bg1251.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-cat.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-cn.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-cs.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-da.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-de.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-dk.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-el.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-en.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-es.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-fa.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-fi.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-fr.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-gl.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-he.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-hr.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-hr1250.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-hu.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-id.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-is.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-it.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-ja.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-kr.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-lt.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-mne.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-nl.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-no.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-pl.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-pt-br.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-pt.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-ro.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-ru.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-sk.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-sr-latin.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-sr.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-sv.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-th.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-tr.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-tw.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-ua.js" />
-    <Content Include="Scripts\trirand\i18n\grid.locale-vi.js" />
-    <Content Include="Scripts\trirand\jquery.jqAutoComplete.min.js" />
-    <Content Include="Scripts\trirand\jquery.jqChart.exporting.min.js" />
-    <Content Include="Scripts\trirand\jquery.jqChart.min.js" />
-    <Content Include="Scripts\trirand\jquery.jqDatePicker.min.js" />
-    <Content Include="Scripts\trirand\jquery.jqDropDownList.min.js" />
-    <Content Include="Scripts\trirand\jquery.jqGrid.min.js" />
-    <Content Include="Scripts\trirand\jquery.jqTreeView.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -403,6 +354,7 @@
     <Content Include="Views\Card\WeekEntry.cshtml" />
     <Content Include="Views\Card\TimeLineView.cshtml" />
     <Content Include="Views\Supervisor\Index.cshtml" />
+    <None Include="Web.CRC.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
